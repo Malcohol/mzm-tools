@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #
-# mzmconvert - parses MazezaM .mzm files and writes the mazezams in ZXBasic
-#              or Z80 to standard out.
+# mzm-convert - parses MazezaM .mzm files and writes the mazezams in ZXBasic,
+#              Z80 asm or BASICODE.
 #
 # Copyright (C) 2002,2009,2020 Malcolm Tyrrell
 # malcolm.r.tyrrell@gmail.com
