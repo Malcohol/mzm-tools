@@ -93,20 +93,17 @@ class Mazezam:
         outfile.write(", (" + str(1 + self.height - self.leftExit) + " * 16) + " + str(1 + self.height - self.rightExit))
         for i in range(self.height * self.width):
             if i % 32 == 0:
-                outfile.write("\n\tdefb ")
+                outfile.write("\n\tdefb 0b")
             elif i % 8 == 0:
-                outfile.write(", ")
+                outfile.write(", 0b")
             x, y = divmod(i, self.width)
             if self.lines[x][y] == " ":
                 outfile.write("0")
             else:
                 outfile.write("1")
-            if i % 8 == 7:
-                outfile.write("B")
         r = (self.height * self.width) % 8
         if r != 0:
             outfile.write("0" * (8 - r))
-            outfile.write("B")
 
     def line2zxbas(self,l,outfile):
         "writes a line of the mazezam in ZX Basic to the file"
