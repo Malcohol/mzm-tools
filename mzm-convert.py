@@ -11,60 +11,45 @@
 
 from MazezaM import MazezamList, MZMParseError
 from sys import argv, stderr, stdout, exit
+from argparse import ArgumentParser, FileType
 
 programName = "mzm-convert"
 
-def usage():
-    stderr.write(programName + " [-z|-b|-c] filename [filename...]\n")
-
 def main():
-    if len(argv) < 3:
-        usage()
-        exit(1)
-
-    outputType = ""
-
-    if ( argv[1] == "-b" ) or ( argv[1] == "--basic" ):
-        outputType = "basic"
-    elif ( argv[1] == "-z" ) or ( argv[1] == "--z80" ):
-        outputType = "z80"
-    elif ( argv[1] == "-c" ) or ( argv[1] == "--basicode" ):
-        outputType = "basicode"
-    else:
-        usage()
-        exit(1)
-        
-    # make sure that there are files to parse
-    if len(argv) < 3:
-        usage()
-        exit(1)
+    parser = ArgumentParser()
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("-z", "--z80", action="store_true")
+    group.add_argument("-b", "--basic", action="store_true")
+    group.add_argument("-c", "--basicode", action="store_true")
+    parser.add_argument("files", nargs="+", type=FileType("r"))
+    parser.add_argument("-o", "--output", action="store")
+    parsedArgs = parser.parse_args()
     
     # create the MazezamList to hold the mazezams
     
     mazezamList = MazezamList()
-    
-    # for all the filenames provided on the command-line, open each file, parse
+
+    # for all the filenames provided on the command-line, parse
     # it into mazezamList and close it.
     
-    for filename in argv[2:]:
-        try:
-            input = open(filename,'r')
-        except:
-            stderr.write(programName + ": cannot open input file "+filename+"\n")
-            exit(2)
+    for input in parsedArgs.files:
         try:
             mazezamList.readFromMZMLines(input.readlines())
-        except MZMParseError, thatError:
-            thatError.filename = filename
+        except MZMParseError as thatError:
+            thatError.filename = input.name
             stderr.write(programName + ": "+str(thatError)+"\n")
             exit(3)
         input.close()
 
-    if outputType == "basic":
-        mazezamList.write2zxbas(stdout)
-    elif outputType == "z80":
-        mazezamList.write2z80(stdout)
+    output = stdout
+    if parsedArgs.output:
+        output = open(parsedArgs.output, "w")
+
+    if parsedArgs.basic:
+        mazezamList.write2zxbas(output)
+    elif parsedArgs.z80:
+        mazezamList.write2z80(output)
     else:
-        mazezamList.write2basicode(stdout)
+        mazezamList.write2basicode(output)
 
 main()
