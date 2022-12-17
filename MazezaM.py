@@ -226,7 +226,7 @@ class MazezamList:
                     title = mazezam.title
                     author = mazezam.author
                     mazezam = Mazezam(title, author)
-                if line[:9].    upper() == ";;TITLE: ":
+                if line[:9].upper() == ";;TITLE: ":
                     if len(line)-10 <= 28:
                         mazezam.title = line[9:-1]
                     else:
