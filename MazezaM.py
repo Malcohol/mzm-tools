@@ -219,22 +219,22 @@ class MazezamList:
             title = ""
             author = ""
             if mazezamline(line):
-                mazezam.appendMZMLine(string.strip(line))
+                mazezam.appendMZMLine(line.strip())
             else:
                 if not mazezam.empty():
                     self.append(mazezam)
                     title = mazezam.title
                     author = mazezam.author
                     mazezam = Mazezam(title, author)
-                if string.upper(line[:9]) == ";;TITLE: ":
+                if line[:9].upper() == ";;TITLE: ":
                     if len(line)-10 <= 28:
                         mazezam.title = line[9:-1]
                     else:
                         raise MZMParseError(lineno,"Title string too long.")
-                elif string.upper(line[:10]) == ";;AUTHOR: ":
+                elif line[:10].upper() == ";;AUTHOR: ":
                     mazezam.author = line[10:-1]    
-                elif string.upper(line[:11]) == ";;VERSION: ":
-                    if string.strip(line[11:]) != "1":
+                elif line[:11].upper() == ";;VERSION: ":
+                    if line[11:].strip() != "1":
                         raise MZMParseError(lineno,"This program can only handle version 1 mazezams.")
                 elif line == "\n":
                     pass
